@@ -72,9 +72,9 @@ urchin_stats <- urchins_data %>%
 HELP
 
 # Section 2
-## Exploring purple urchin count by site and yeat
+## Exploring purple urchin count by site and year
 
-### i) Created purple_urchins subset
+### i) Created purple_urchins subset.
 - Filter to only include observations for purple urchins
 - Convert the date to class “Date” 
 - Create a new column that only contains the year
@@ -112,3 +112,4 @@ ggplot(data = purple_urchins_totals, aes(x = year, y = n))+
 
 ```
 
+THE END! WOO HOO!
