@@ -21,12 +21,13 @@ urchins_data <- read_csv(here("data", "urchins.csv")) %>%
   clean_names()
 ```
 
-## 1) Comparing the mean size of purple urchins in CONTROL (no giant kelp removal) or ANNUAL (annual kelp removal) sections of Naples Reef in Jauary 2010
+In this project, I compared the mean size of purple urchins in CONTROL (no giant kelp removal) or ANNUAL (annual kelp removal) sections of Naples Reef in January 2010
 
 ### a) Wrangling the data
 - Here I wrangled the urchins data to only include Naples Reef observations for purple urchins observed in January 2010
 
-```{r, include=FALSE}
+
+```{r, message=FALSE}
   urchins_clean_dates <- urchins_data %>%
   mutate(date = mdy(date))
 
@@ -49,6 +50,7 @@ purple_urchins_comp <- urchins_clean_dates %>%
  
 ```
 
+
 ### b) Exploratory graphing to see size distribution for each of the treatments to assess normality
 
 - Here I made a histogram and qqplot
@@ -63,14 +65,13 @@ ggplot(data = purple_urchins_comp, aes(sample = size)) +
   facet_wrap(~treatment)
 ```
 
-HELP 1 - 2 sentences describing your main takeaways about the distribution of urchin sizes for each group. HELP
-
+- Both the Annual and Control plots (sample Q-Q Plots and histograms) look like they are following an overall normal distribution with a slight positive skew. Both have a few urchins that have a higher than expected diameter size (especially the Annual treatment) compared to if the data was truly normally distributed. 
 
 ### c) Created a basic table of descriptive statistics for CONTROL and ANNUAL groups
 
 - Here I made a table of both groups with their respective mean, standard deviation, and sample size)
 
-```{r}
+```{r, message=FALSE}
 purple_urchin_stats <- purple_urchins_comp %>% 
   group_by(treatment) %>% 
   summarize(mean = mean(size),
@@ -81,24 +82,58 @@ kbl(purple_urchin_stats)%>%
    kable_classic()
 ```
 
+
 ### d) Performed a two-sample t-test to compare means between the two groups
 
-- Here I created vectors containing observations for each sample
+- Here I created vectors containing observations for each sample (annual treatment and control treatment)
 
 ```{r}
 
-compact_sample <- compact_suv %>% 
-  filter(class == "compact") %>% 
-  pull(cty)
+annual_sample <- purple_urchins_comp %>% 
+  filter(treatment == "ANNUAL") %>% 
+  pull(size)
 
-suv_sample <- compact_suv %>% 
-  filter(class == "suv") %>% 
-  pull(cty)
+control_sample <- purple_urchins_comp %>% 
+  filter(treatment == "CONTROL") %>% 
+  pull(size)
 ```
 
-### 5. Then run a two-sample t-test with those vectors as the inputs
+
+
+- Here I Ran a two-sample t-test with those vectors as the inputs
 
 ```{r}
-t.test(compact_sample, suv_sample)
+t.test(annual_sample, control_sample)
 ```
+
+
+
+
+- Here I calculated the difference in the means
+
+
+Actual difference between the mean urchin diameter between Purple urchin treatment samples (annual and control)
+```{r}
+ 3.916667 - 3.725806
+```
+
+
+
+Percent difference between the mean urchin diameter between Purple urchin treatment samples (annual and control)
+```{r}
+(3.916667 - 3.725806) / ((3.916667 + 3.725806) / 2) * 100
+```
+
+
+
+### e) What does the t-test tell us about the measures of central tendency and p-value?
+
+- I found a mean ± SD for each of 3.9 ± 1.0 cm and 3.7 ± 0.9 cm (annual and control), respectively. The difference between the mean diameter of the annual and control samples is a small 0.19 cm or a 4.99% difference, showing that the sample means are very similar.The p-value is 0.2536, which means that there is a 25.36% probability that we would get samples with means that are at least this different by random chance if they were taken from populations of urchins with the same mean diameter size. 
+
+### f) What does the p-value mean?
+
+- Since p > 0.05 (our significance level) we cannot reject the null hypothesis that these samples were drawn from populations with the same mean diameter size, and cannot retain the alternative hypothesis that samples are drawn from populations with different mean diameters sizes.
+
+
+
 
