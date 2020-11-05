@@ -1,0 +1,104 @@
+---
+title: "a3_task4_morganne_sigismonti.Rmd"
+author: "Morganne Sigismonti"
+date: "11/2/2020"
+output: html_document
+---
+# Assignment 3 Part 4
+## Naples Reef (January 2010) Purple Urchins Wrangling and Analysis
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(here)
+library(kableExtra)
+```
+
+### Read in the urchins data
+```{r, message=FALSE}
+urchins_data <- read_csv(here("data", "urchins.csv")) %>% 
+  clean_names()
+```
+
+## 1) Comparing the mean size of purple urchins in CONTROL (no giant kelp removal) or ANNUAL (annual kelp removal) sections of Naples Reef in Jauary 2010
+
+### a) Wrangling the data
+- Here I wrangled the urchins data to only include Naples Reef observations for purple urchins observed in January 2010
+
+```{r, include=FALSE}
+  urchins_clean_dates <- urchins_data %>%
+  mutate(date = mdy(date))
+
+class(urchins_clean_dates$date)
+
+purple_urchins_comp <- urchins_clean_dates %>%
+  mutate(date = ymd(date)) %>%
+  mutate(month = month(date)) %>% 
+  mutate(year = year(date)) %>% 
+  filter(year == 2010,
+         month == 1) %>%
+  mutate(site_full = recode(site, "NAPL" = "Naples Reef")) %>%
+  filter(common_name == "Purple Urchin") %>%
+  filter(treatment %in% c("ANNUAL", "CONTROL")) %>%
+  filter(site_full == "Naples Reef") %>% 
+  select(site_full, common_name, month, year, treatment, size)
+  
+  
+  
+ 
+```
+
+### b) Exploratory graphing to see size distribution for each of the treatments to assess normality
+
+- Here I made a histogram and qqplot
+
+```{r}
+ggplot(data = purple_urchins_comp, aes(x = size)) +
+  geom_histogram(binwidth = .5) +
+  facet_wrap(~ treatment)
+
+ggplot(data = purple_urchins_comp, aes(sample = size)) +
+  geom_qq() +
+  facet_wrap(~treatment)
+```
+
+HELP 1 - 2 sentences describing your main takeaways about the distribution of urchin sizes for each group. HELP
+
+
+### c) Created a basic table of descriptive statistics for CONTROL and ANNUAL groups
+
+- Here I made a table of both groups with their respective mean, standard deviation, and sample size)
+
+```{r}
+purple_urchin_stats <- purple_urchins_comp %>% 
+  group_by(treatment) %>% 
+  summarize(mean = mean(size),
+            sd = sd(size),
+            sample_size = n())
+
+kbl(purple_urchin_stats)%>%
+   kable_classic()
+```
+
+### d) Performed a two-sample t-test to compare means between the two groups
+
+- Here I created vectors containing observations for each sample
+
+```{r}
+
+compact_sample <- compact_suv %>% 
+  filter(class == "compact") %>% 
+  pull(cty)
+
+suv_sample <- compact_suv %>% 
+  filter(class == "suv") %>% 
+  pull(cty)
+```
+
+### 5. Then run a two-sample t-test with those vectors as the inputs
+
+```{r}
+t.test(compact_sample, suv_sample)
+```
+

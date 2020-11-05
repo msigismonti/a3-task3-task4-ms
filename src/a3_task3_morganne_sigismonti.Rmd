@@ -48,7 +48,7 @@ ggplot(data = urchins_data, aes(x = common_name, y = size)) +
 
 
 ### ii) Descriptive Statistics Table
-- A summary table that contains the mean, median, standard deviation, and sample size
+- A summary table that contains the mean, median, standard deviation of the purple and red urchin diameter and sample size of the purple and red urchins.
 
 ```{r, message = FALSE}
 urchin_stats <- urchins_data %>% 
@@ -64,12 +64,18 @@ urchin_stats <- urchins_data %>%
 
 ```
 ### iii) Overall Takeaways
-- There is a 41.0214% difference in the mean urchin diameter between the two species (purple urchin and red urchin). The standard deviation for each species' diameter is low, which shows that their are many values that are closer to the mean than not. 
-- distribution
-- central tendancy
-- spread (sd) how observations are dispersed around a central tendancy value. Our Standard deviation is small, which means that there are more values that are closer to the mean than not.
+- Actual difference between the mean urchin diameter between the Red and Purple urchin species
+```{r}
+6.776489 - 4.469797
+```
 
-HELP
+- Percent difference between the mean urchin diameter between the Red and Purple urchin species
+```{r}
+(6.776489 - 4.469797) / ((4.469797+ 6.776489) / 2) * 100
+```
+
+-There is a 2.31 centimeter difference in the mean diameter between the red and the purple urchin species. There is a 41.02% difference in the mean urchin diameter between the purple urchin and red urchin species. Overall, the mean diameter of the red urchin data samples is 2.31 centimeters or 41.02% larger than the mean diameter of the purple  urchin data samples. 
+
 
 # Section 2
 ## Exploring purple urchin count by site and year
